@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimal_habit_tracker_luis_ake/components/my_drawer.dart';
 import 'package:minimal_habit_tracker_luis_ake/components/my_habit_tile.dart';
+import 'package:minimal_habit_tracker_luis_ake/components/my_heat_map.dart';
 import 'package:minimal_habit_tracker_luis_ake/database/habit_database.dart';
 import 'package:minimal_habit_tracker_luis_ake/models/habit.dart';
 import 'package:minimal_habit_tracker_luis_ake/util/habit_util.dart';
@@ -168,7 +169,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // ignore: deprecated_member_use
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
       drawer: const MyDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: createNewHabit,
@@ -176,9 +181,44 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         child: const Icon(Icons.add),
         ),
-      body: _buildHabitList(),
+      body: ListView(
+        children: [
+          //HEATMAP
+          _buildHeatMap(),
+
+          //LISTA DE HABITOS
+          _buildHabitList(),
+        ],
+      ),
     );
     
+  }
+  //construir el heatmap
+  Widget _buildHeatMap(){
+    //habito de la base de datos
+    final habitDatabase = context.watch<HabitDatabase>();
+
+    //habitos actuales
+    List<Habit> currentHabits =habitDatabase.currentHabits;
+
+    //retornar el heatmap en la interfaz
+    return FutureBuilder<DateTime?>(
+      future: habitDatabase.getFirstLaunchDate(),
+      builder: (context,snapshot) {
+        //una vez que los datos esten disponibles -> construir el heatmap
+        if (snapshot.hasData) {
+          return MyHeatMap
+          (startDate: snapshot.data!,
+           datasets: prepareHeatMapDataset(currentHabits),
+          );
+        }
+
+        //manejar el caso cuando no haya ningun dato
+        else{
+          return Container();
+        }
+      },
+    );
   }
 
   //construir la lista de habitos
@@ -192,6 +232,8 @@ class _HomePageState extends State<HomePage> {
       //retornar la lista de habitos en la interfaz
       return ListView.builder(
         itemCount: currentHabits.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
         //obener cada habito individual
         final habit = currentHabits[index];
