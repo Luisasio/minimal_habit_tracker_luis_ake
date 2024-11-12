@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:minimal_habit_tracker_luis_ake/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ class MyDrawer extends StatelessWidget {
         // ignore: deprecated_member_use
         backgroundColor: Theme.of(context).colorScheme.background,
         child: Center(
-          child: CupertinoSwitch(
+          child: Switch(
             value: Provider.of<ThemeProvider>(context).isDarkMode,
             onChanged: (value) => 
                 Provider.of<ThemeProvider>(context, listen: false)
