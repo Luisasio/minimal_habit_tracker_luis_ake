@@ -73,7 +73,7 @@ class HabitDatabase extends ChangeNotifier{
     notifyListeners();
   }
 
-  //UPDATE - marcar el habito como si o no
+  //UPDATE - marcar el habito como completado o no completado
   Future<void> updateHabitCompletion(int id, bool isCompleted) async{
     //buscar el habito
     final habit = await isar.habits.get(id);

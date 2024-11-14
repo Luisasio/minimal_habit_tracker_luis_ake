@@ -6,7 +6,7 @@ class MyHabitTile extends StatelessWidget {
   final bool isCompleted;
   final void Function(bool?)? onChanged;
   final void Function(BuildContext)? editHabit;
-    final void Function(BuildContext)? deleteHabit;
+  final void Function(BuildContext)? deleteHabit;
 
   const MyHabitTile({
     super.key,
